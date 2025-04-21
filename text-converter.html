@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>أداة تحويل النصوص</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header>
+    <h1>أداة تحويل النصوص</h1>
+    <p>اكتب النص أدناه لاختيار تحويل الحروف:</p>
+  </header>
+
+  <main>
+    <section class="converter">
+      <textarea id="inputText" placeholder="أدخل النص هنا..."></textarea>
+
+      <button onclick="convertToUpperCase()">تحويل إلى حروف كبيرة</button>
+      <button onclick="convertToLowerCase()">تحويل إلى حروف صغيرة</button>
+      <button onclick="reverseText()">عكس النص</button>
+
+      <textarea id="outputText" readonly placeholder="النص المحول يظهر هنا..."></textarea>
+    </section>
+  </main>
+
+  <footer>
+    <p>حقوق النشر &copy; 2025 صبحي شبايكي</p>
+  </footer>
+
+  <script src="../assets/scripts.js"></script>
+</body>
+</html>
