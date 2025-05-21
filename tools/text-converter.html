@@ -1,34 +1,62 @@
-
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>أداة تحويل النصوص</title>
-  <link rel="stylesheet" href="../assets/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body>
-  <header>
-    <h1>أداة تحويل النصوص</h1>
-    <p>اكتب النص أدناه لاختيار تحويل الحروف:</p>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white shadow-md py-6 px-4 text-center">
+    <h1 class="text-3xl font-bold text-blue-700">أداة تحويل النصوص</h1>
+    <p class="mt-2 text-lg text-gray-600">اكتب النص أدناه لاختيار تحويل الحروف:</p>
   </header>
 
-  <main>
-    <section class="converter">
-      <textarea id="inputText" placeholder="أدخل النص هنا..."></textarea>
+  <!-- Main -->
+  <main class="flex-grow py-10 px-4">
+    <section class="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+      <textarea id="inputText" class="w-full h-40 p-4 mb-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none" placeholder="أدخل النص هنا..."></textarea>
 
-      <button onclick="convertToUpperCase()">تحويل إلى حروف كبيرة</button>
-      <button onclick="convertToLowerCase()">تحويل إلى حروف صغيرة</button>
-      <button onclick="reverseText()">عكس النص</button>
+      <div class="flex flex-col md:flex-row gap-4 mb-4">
+        <button onclick="convertToUpperCase()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">تحويل إلى حروف كبيرة</button>
+        <button onclick="convertToLowerCase()" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">تحويل إلى حروف صغيرة</button>
+        <button onclick="reverseText()" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">عكس النص</button>
+      </div>
 
-      <textarea id="outputText" readonly placeholder="النص المحول يظهر هنا..."></textarea>
+      <textarea id="outputText" readonly class="w-full h-40 p-4 rounded-lg border border-gray-300 bg-gray-50 resize-none" placeholder="النص المحول يظهر هنا..."></textarea>
     </section>
   </main>
 
-  <footer>
-    <p>حقوق النشر &copy; 2025 صبحي شبايكي</p>
+  <!-- Footer -->
+  <footer class="bg-white text-center py-4 border-t">
+    <p class="text-sm text-gray-500">حقوق النشر &copy; 2025 صبحي شبايكي</p>
   </footer>
 
-  <script src="../assets/scripts.js"></script>
+  <!-- Script -->
+  <script>
+    function convertToUpperCase() {
+      const input = document.getElementById('inputText').value;
+      document.getElementById('outputText').value = input.toUpperCase();
+    }
+
+    function convertToLowerCase() {
+      const input = document.getElementById('inputText').value;
+      document.getElementById('outputText').value = input.toLowerCase();
+    }
+
+    function reverseText() {
+      const input = document.getElementById('inputText').value;
+      document.getElementById('outputText').value = input.split('').reverse().join('');
+    }
+  </script>
+
 </body>
 </html>
