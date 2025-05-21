@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>أداة عدّ الكلمات والجمل</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white shadow-md py-6 px-4 text-center">
+    <h1 class="text-3xl font-bold text-blue-700">أداة عدّ الكلمات والجمل</h1>
+    <p class="mt-2 text-lg text-gray-600">أدخل النص ليتم حساب عدد الكلمات والجمل فيه.</p>
+  </header>
+
+  <!-- Main -->
+  <main class="flex-grow py-10 px-4">
+    <section class="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+      <textarea
+        id="inputText"
+        class="w-full h-40 p-4 mb-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+        placeholder="أدخل النص هنا..."
+      ></textarea>
+
+      <button
+        onclick="countWordsSentences()"
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 mb-4"
+      >
+        حساب الكلمات والجمل
+      </button>
+
+      <div class="text-gray-700 text-lg font-medium space-y-2 mb-6">
+        <p id="wordCount">عدد الكلمات: 0</p>
+        <p id="sentenceCount">عدد الجمل: 0</p>
+      </div>
+
+      <div class="flex gap-4">
+        <button
+          onclick="saveResults()"
+          class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition duration-200"
+        >
+          حفظ النتائج كملف نصي
+        </button>
+        <button
+          onclick="copyResults()"
+          class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
+        >
+          نسخ النتائج للحافظة
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white text-center py-4 border-t">
+    <p class="text-sm text-gray-500">حقوق النشر &copy; 2025 صبحي شبايكي</p>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    let lastWordCount = 0;
+    let lastSentenceCount = 0;
+
+    function countWordsSentences() {
+      const text = document.getElementById('inputText').value.trim();
+
+      if (!text) {
+        alert('الرجاء إدخال نص لحسابه.');
+        return;
+      }
+
+      const words = text.split(/\s+/).filter(word => word.length > 0);
+      const wordCount = words.length;
+
+      const sentences = text.split(/[.!؟?!]+/).filter(sentence => sentence.trim().length > 0);
+      const sentenceCount = sentences.length;
+
+      lastWordCount = wordCount;
+      lastSentenceCount = sentenceCount;
+
+      document.getElementById('wordCount').textContent = `عدد الكلمات: ${wordCount}`;
+      document.getElementById('sentenceCount').textContent = `عدد الجمل: ${sentenceCount}`;
+    }
+
+    function saveResults() {
+      if (lastWordCount === 0 && lastSentenceCount === 0) {
+        alert('لا توجد نتائج للحفظ. يرجى حساب الكلمات والجمل أولاً.');
+        return;
+      }
+      const content = `عدد الكلمات: ${lastWordCount}\nعدد الجمل: ${lastSentenceCount}`;
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'نتائج-العد.txt';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function copyResults() {
+      if (lastWordCount === 0 && lastSentenceCount === 0) {
+        alert('لا توجد نتائج للنسخ. يرجى حساب الكلمات والجمل أولاً.');
+        return;
+      }
+      const content = `عدد الكلمات: ${lastWordCount}\nعدد الجمل: ${lastSentenceCount}`;
+      navigator.clipboard.writeText(content).then(() => {
+        alert('تم نسخ النتائج إلى الحافظة.');
+      }, () => {
+        alert('فشل النسخ إلى الحافظة.');
+      });
+    }
+  </script>
+
+</body>
+</html>
