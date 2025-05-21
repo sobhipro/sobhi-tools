@@ -2,75 +2,91 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>أداة حساب الفرق بين تاريخين</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    input, #result {
-      font-family: 'Tajawal', sans-serif;
-      font-size: 1.1rem;
-    }
-  </style>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 </head>
-<body class="bg-gray-100 min-h-screen text-gray-800 flex flex-col">
+<body class="bg-gray-100 min-h-screen text-gray-800 flex flex-col font-sans">
 
-  <!-- Header -->
   <header class="bg-white shadow-md py-6 px-4 text-center">
-    <h1 class="text-3xl font-bold text-blue-700">أداة حساب الفرق بين تاريخين</h1>
-    <p class="mt-2 text-lg text-gray-600">أدخل تاريخين لحساب الفرق بينهما بالأيام أو الأشهر أو السنوات.</p>
+    <h1 class="text-3xl font-bold text-blue-700">Date Difference Tool</h1>
+    <p class="mt-2 text-lg text-gray-600">Enter two dates to calculate the difference.</p>
   </header>
 
-  <!-- Main -->
   <main class="flex-grow py-10 px-4">
     <section class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-md border border-gray-200">
-      <label class="block mb-4">
-        <span class="text-gray-700 font-medium">التاريخ الأول:</span>
-        <input type="date" id="date1" lang="en" class="w-full mt-1 p-2 rounded-lg border border-gray-300" />
+      <label class="block mb-4 text-left">
+        <span class="text-gray-700 font-medium">First Date:</span>
+        <input
+          id="date1"
+          type="text"
+          placeholder="Select date"
+          class="w-full mt-1 p-2 rounded-lg border border-gray-300 text-left"
+        />
       </label>
 
-      <label class="block mb-6">
-        <span class="text-gray-700 font-medium">التاريخ الثاني:</span>
-        <input type="date" id="date2" lang="en" class="w-full mt-1 p-2 rounded-lg border border-gray-300" />
+      <label class="block mb-6 text-left">
+        <span class="text-gray-700 font-medium">Second Date:</span>
+        <input
+          id="date2"
+          type="text"
+          placeholder="Select date"
+          class="w-full mt-1 p-2 rounded-lg border border-gray-300 text-left"
+        />
       </label>
 
       <button
         onclick="calculateDateDifference()"
         class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 mb-4"
       >
-        حساب الفرق
+        Calculate Difference
       </button>
 
       <button
         onclick="saveResultToFile()"
         class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 mb-4"
       >
-        حفظ النتيجة كملف نصي
+        Save Result as Text File
       </button>
 
       <div id="result" class="text-lg text-gray-800 font-medium text-right whitespace-pre-line"></div>
     </section>
   </main>
 
-  <!-- Footer -->
   <footer class="bg-white text-center py-4 border-t">
     <p class="text-sm text-gray-500">© 2025 Sobhi Chebaiki. All rights reserved.</p>
   </footer>
 
-  <!-- Script -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
+    // تهيئة flatpickr مع تنسيق التاريخ بالإنجليزية
+    flatpickr("#date1", {
+      dateFormat: "d F Y", // مثال: 29 April 2025
+      locale: "default" // الإنجليزية
+    });
+
+    flatpickr("#date2", {
+      dateFormat: "d F Y",
+      locale: "default"
+    });
+
     let currentResultText = '';
 
     function calculateDateDifference() {
-      const date1 = new Date(document.getElementById('date1').value);
-      const date2 = new Date(document.getElementById('date2').value);
+      const d1 = document.getElementById('date1').value;
+      const d2 = document.getElementById('date2').value;
 
-      if (!date1 || !date2 || isNaN(date1) || isNaN(date2)) {
-        alert('يرجى إدخال تاريخين صحيحين.');
+      if (!d1 || !d2) {
+        alert('Please select both dates.');
+        return;
+      }
+
+      const date1 = new Date(d1);
+      const date2 = new Date(d2);
+
+      if (isNaN(date1) || isNaN(date2)) {
+        alert('Invalid date(s).');
         return;
       }
 
@@ -81,22 +97,20 @@
       const diffYears = Math.floor(diffDays / 365.25);
 
       currentResultText =
-`الفرق بين التاريخين هو:
-🗓️ ${diffDays} يوم
-📅 ${diffWeeks} أسبوع
-📆 ${diffMonths} شهر تقريبي
-🕰️ ${diffYears} سنة تقريبية`;
+`Difference between the two dates:
+🗓️ ${diffDays} days
+📅 ${diffWeeks} weeks
+📆 approx. ${diffMonths} months
+🕰️ approx. ${diffYears} years`;
 
-      // عرض النتيجة مع أرقام إنجليزية وكلمات عربية
       document.getElementById('result').innerText = currentResultText;
     }
 
     function saveResultToFile() {
       if (!currentResultText) {
-        alert('يرجى حساب الفرق أولاً قبل الحفظ.');
+        alert('Calculate the difference first.');
         return;
       }
-
       const blob = new Blob([currentResultText], { type: 'text/plain' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
@@ -104,6 +118,5 @@
       link.click();
     }
   </script>
-
 </body>
 </html>
