@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>أداة عدّ الكلمات والجمل</title>
+  <title>أداة عدّ الكلمات والجمل والحروف</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -16,8 +16,8 @@
 
   <!-- Header -->
   <header class="bg-white shadow-md py-6 px-4 text-center">
-    <h1 class="text-3xl font-bold text-blue-700">أداة عدّ الكلمات والجمل</h1>
-    <p class="mt-2 text-lg text-gray-600">أدخل النص ليتم حساب عدد الكلمات والجمل فيه.</p>
+    <h1 class="text-3xl font-bold text-blue-700">أداة عدّ الكلمات والجمل والحروف</h1>
+    <p class="mt-2 text-lg text-gray-600">أدخل النص ليتم حساب عدد الكلمات والجمل والحروف.</p>
   </header>
 
   <!-- Main -->
@@ -30,15 +30,16 @@
       ></textarea>
 
       <button
-        onclick="countWordsSentences()"
+        onclick="countTextStats()"
         class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 mb-4"
       >
-        حساب الكلمات والجمل
+        حساب المحتوى
       </button>
 
       <div class="text-gray-700 text-lg font-medium space-y-2 mb-6">
         <p id="wordCount">عدد الكلمات: 0</p>
         <p id="sentenceCount">عدد الجمل: 0</p>
+        <p id="charCount">عدد الحروف: 0</p>
       </div>
 
       <div class="flex gap-4">
@@ -67,8 +68,9 @@
   <script>
     let lastWordCount = 0;
     let lastSentenceCount = 0;
+    let lastCharCount = 0;
 
-    function countWordsSentences() {
+    function countTextStats() {
       const text = document.getElementById('inputText').value.trim();
 
       if (!text) {
@@ -77,42 +79,43 @@
       }
 
       const words = text.split(/\s+/).filter(word => word.length > 0);
-      const wordCount = words.length;
+      lastWordCount = words.length;
 
       const sentences = text.split(/[.!؟?!]+/).filter(sentence => sentence.trim().length > 0);
-      const sentenceCount = sentences.length;
+      lastSentenceCount = sentences.length;
 
-      lastWordCount = wordCount;
-      lastSentenceCount = sentenceCount;
+      const characters = text.replace(/\s/g, '');
+      lastCharCount = characters.length;
 
-      document.getElementById('wordCount').textContent = `عدد الكلمات: ${wordCount}`;
-      document.getElementById('sentenceCount').textContent = `عدد الجمل: ${sentenceCount}`;
+      document.getElementById('wordCount').textContent = `عدد الكلمات: ${lastWordCount}`;
+      document.getElementById('sentenceCount').textContent = `عدد الجمل: ${lastSentenceCount}`;
+      document.getElementById('charCount').textContent = `عدد الحروف: ${lastCharCount}`;
     }
 
     function saveResults() {
-      if (lastWordCount === 0 && lastSentenceCount === 0) {
-        alert('لا توجد نتائج للحفظ. يرجى حساب الكلمات والجمل أولاً.');
+      if (lastWordCount === 0 && lastSentenceCount === 0 && lastCharCount === 0) {
+        alert('لا توجد نتائج للحفظ. يرجى حساب النص أولاً.');
         return;
       }
-      const content = `عدد الكلمات: ${lastWordCount}\nعدد الجمل: ${lastSentenceCount}`;
+      const content = `عدد الكلمات: ${lastWordCount}\nعدد الجمل: ${lastSentenceCount}\nعدد الحروف: ${lastCharCount}`;
       const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = 'نتائج-العد.txt';
+      link.download = 'نتائج-التحليل.txt';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }
 
     function copyResults() {
-      if (lastWordCount === 0 && lastSentenceCount === 0) {
-        alert('لا توجد نتائج للنسخ. يرجى حساب الكلمات والجمل أولاً.');
+      if (lastWordCount === 0 && lastSentenceCount === 0 && lastCharCount === 0) {
+        alert('لا توجد نتائج للنسخ. يرجى حساب النص أولاً.');
         return;
       }
-      const content = `عدد الكلمات: ${lastWordCount}\nعدد الجمل: ${lastSentenceCount}`;
+      const content = `عدد الكلمات: ${lastWordCount}\nعدد الجمل: ${lastSentenceCount}\nعدد الحروف: ${lastCharCount}`;
       navigator.clipboard.writeText(content).then(() => {
         alert('تم نسخ النتائج إلى الحافظة.');
-      }, () => {
+      }).catch(() => {
         alert('فشل النسخ إلى الحافظة.');
       });
     }
