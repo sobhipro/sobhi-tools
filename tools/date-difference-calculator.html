@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>أداة حساب الفرق بين تاريخين</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Tajawal', sans-serif; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800 flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white shadow-md py-6 px-4 text-center">
+    <h1 class="text-3xl font-bold text-blue-700">أداة حساب الفرق بين تاريخين</h1>
+    <p class="mt-2 text-lg text-gray-600">أدخل تاريخين لحساب الفرق بينهما بالأيام أو الأشهر أو السنوات.</p>
+  </header>
+
+  <!-- Main -->
+  <main class="flex-grow py-10 px-4">
+    <section class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+      <label class="block mb-4">
+        <span class="text-gray-700 font-medium">التاريخ الأول:</span>
+        <input type="date" id="date1" class="w-full mt-1 p-2 rounded-lg border border-gray-300" />
+      </label>
+
+      <label class="block mb-6">
+        <span class="text-gray-700 font-medium">التاريخ الثاني:</span>
+        <input type="date" id="date2" class="w-full mt-1 p-2 rounded-lg border border-gray-300" />
+      </label>
+
+      <button
+        onclick="calculateDateDifference()"
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 mb-4"
+      >
+        حساب الفرق
+      </button>
+
+      <div id="result" class="text-lg text-gray-800 font-medium text-center"></div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white text-center py-4 border-t">
+    <p class="text-sm text-gray-500">حقوق النشر &copy; 2025 صبحي شبايكي</p>
+  </footer>
+
+  <script>
+    function calculateDateDifference() {
+      const date1 = new Date(document.getElementById('date1').value);
+      const date2 = new Date(document.getElementById('date2').value);
+
+      if (!date1 || !date2 || isNaN(date1) || isNaN(date2)) {
+        alert('يرجى إدخال تاريخين صحيحين.');
+        return;
+      }
+
+      const diffTime = Math.abs(date2 - date1);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const diffWeeks = Math.floor(diffDays / 7);
+      const diffMonths = Math.floor(diffDays / 30.44);
+      const diffYears = Math.floor(diffDays / 365.25);
+
+      document.getElementById('result').innerHTML = `
+        الفرق بين التاريخين هو:<br>
+        🗓️ <strong>${diffDays}</strong> يوم<br>
+        📅 <strong>${diffWeeks}</strong> أسبوع<br>
+        📆 <strong>${diffMonths}</strong> شهر تقريبي<br>
+        🕰️ <strong>${diffYears}</strong> سنة تقريبية
+      `;
+    }
+  </script>
+
+</body>
+</html>
