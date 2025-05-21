@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>أداة تحويل الأرقام</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Tajawal', sans-serif; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+  <header class="bg-white shadow-md py-6 px-4 text-center">
+    <h1 class="text-3xl font-bold text-blue-700">أداة تحويل الأرقام</h1>
+    <p class="mt-2 text-lg text-gray-600">حوّل الأرقام بين العربية والهندية والرومانية بسهولة</p>
+  </header>
+
+  <main class="flex-grow py-10 px-4">
+    <section class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-md border border-gray-200 space-y-4">
+      
+      <input id="inputNumber" type="text" placeholder="أدخل رقمًا (مثلاً: 123)" 
+             class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 text-left" oninput="convertAll()">
+
+      <div>
+        <h2 class="text-xl font-semibold text-gray-700 mb-2">النتائج:</h2>
+        <div class="bg-gray-50 p-4 rounded-lg border space-y-2">
+          <div><span class="font-medium">أرقام عربية:</span> <span id="arabicNums"></span></div>
+          <div><span class="font-medium">أرقام هندية:</span> <span id="hindiNums"></span></div>
+          <div><span class="font-medium">أرقام رومانية:</span> <span id="romanNums"></span></div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-4">
+        <button onclick="copyResults()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg">نسخ النتائج</button>
+        <button onclick="saveAsFile()" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg">حفظ كملف نصي</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-white text-center py-4 border-t">
+    <p class="text-sm text-gray-500">حقوق النشر &copy; 2025 صبحي شبايكي</p>
+  </footer>
+
+  <script>
+    function convertAll() {
+      const input = document.getElementById('inputNumber').value;
+      const number = parseInt(input, 10);
+      if (isNaN(number)) {
+        document.getElementById('arabicNums').textContent = '';
+        document.getElementById('hindiNums').textContent = '';
+        document.getElementById('romanNums').textContent = '';
+        return;
+      }
+
+      // Arabic numbers
+      document.getElementById('arabicNums').textContent = toArabicDigits(number);
+      // Hindi (Western) numbers
+      document.getElementById('hindiNums').textContent = number.toString();
+      // Roman numbers
+      document.getElementById('romanNums').textContent = toRoman(number);
+    }
+
+    function toArabicDigits(num) {
+      const map = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+      return num.toString().split('').map(d => map[parseInt(d)] || d).join('');
+    }
+
+    function toRoman(num) {
+      if (num <= 0 || num >= 4000) return 'غير مدعوم';
+      const romanMap = [
+        { value: 1000, symbol: 'M' },
+        { value: 900, symbol: 'CM' },
+        { value: 500, symbol: 'D' },
+        { value: 400, symbol: 'CD' },
+        { value: 100, symbol: 'C' },
+        { value: 90, symbol: 'XC' },
+        { value: 50, symbol: 'L' },
+        { value: 40, symbol: 'XL' },
+        { value: 10, symbol: 'X' },
+        { value: 9, symbol: 'IX' },
+        { value: 5, symbol: 'V' },
+        { value: 4, symbol: 'IV' },
+        { value: 1, symbol: 'I' }
+      ];
+      let result = '';
+      for (let i = 0; i < romanMap.length; i++) {
+        while (num >= romanMap[i].value) {
+          result += romanMap[i].symbol;
+          num -= romanMap[i].value;
+        }
+      }
+      return result;
+    }
+
+    function copyResults() {
+      const arabic = document.getElementById('arabicNums').textContent;
+      const hindi = document.getElementById('hindiNums').textContent;
+      const roman = document.getElementById('romanNums').textContent;
+      const fullText = `أرقام عربية: ${arabic}\nأرقام هندية: ${hindi}\nأرقام رومانية: ${roman}`;
+      navigator.clipboard.writeText(fullText).then(() => alert('تم نسخ النتائج!'));
+    }
+
+    function saveAsFile() {
+      const arabic = document.getElementById('arabicNums').textContent;
+      const hindi = document.getElementById('hindiNums').textContent;
+      const roman = document.getElementById('romanNums').textContent;
+      const fullText = `أرقام عربية: ${arabic}\nأرقام هندية: ${hindi}\nأرقام رومانية: ${roman}`;
+      const blob = new Blob([fullText], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'converted-numbers.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
