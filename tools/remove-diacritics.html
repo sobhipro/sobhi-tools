@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>أداة إزالة التشكيل</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white shadow-md py-6 px-4 text-center">
+    <h1 class="text-3xl font-bold text-blue-700">أداة إزالة التشكيل</h1>
+    <p class="mt-2 text-lg text-gray-600">أدخل النص العربي وسيتم إزالة التشكيل منه تلقائيًا.</p>
+  </header>
+
+  <!-- Main -->
+  <main class="flex-grow py-10 px-4">
+    <section class="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+      <textarea id="inputText" class="w-full h-40 p-4 mb-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none" placeholder="أدخل النص المشكّل هنا..."></textarea>
+
+      <div class="flex flex-col md:flex-row gap-4 mb-4">
+        <button onclick="removeDiacritics()" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+          إزالة التشكيل
+        </button>
+        <button onclick="saveToFile()" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
+          حفظ كملف نصي
+        </button>
+      </div>
+
+      <textarea id="outputText" readonly class="w-full h-40 p-4 rounded-lg border border-gray-300 bg-gray-50 resize-none" placeholder="النص بدون تشكيل يظهر هنا..."></textarea>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white text-center py-4 border-t">
+    <p class="text-sm text-gray-500">حقوق النشر &copy; 2025 صبحي شبايكي</p>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    function removeDiacritics() {
+      const text = document.getElementById('inputText').value;
+      const diacriticsRegex = /[\u064B-\u065F\u0610-\u061A\u06D6-\u06ED]/g;
+      const cleanText = text.replace(diacriticsRegex, '');
+      document.getElementById('outputText').value = cleanText;
+    }
+
+    function saveToFile() {
+      const text = document.getElementById('outputText').value;
+      if (!text) {
+        alert('لا يوجد نص لحفظه.');
+        return;
+      }
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'النص_بدون_تشكيل.txt';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+
+</body>
+</html>
