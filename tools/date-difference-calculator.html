@@ -9,6 +9,11 @@
     body {
       font-family: 'Tajawal', sans-serif;
     }
+
+    input, #result {
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.1rem;
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet" />
 </head>
@@ -25,12 +30,12 @@
     <section class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-md border border-gray-200">
       <label class="block mb-4">
         <span class="text-gray-700 font-medium">التاريخ الأول:</span>
-        <input type="date" id="date1" lang="en" class="w-full mt-1 p-2 rounded-lg border border-gray-300" />
+        <input type="date" id="date1" lang="ar" class="w-full mt-1 p-2 rounded-lg border border-gray-300" />
       </label>
 
       <label class="block mb-6">
         <span class="text-gray-700 font-medium">التاريخ الثاني:</span>
-        <input type="date" id="date2" lang="en" class="w-full mt-1 p-2 rounded-lg border border-gray-300" />
+        <input type="date" id="date2" lang="ar" class="w-full mt-1 p-2 rounded-lg border border-gray-300" />
       </label>
 
       <button
@@ -60,6 +65,11 @@
   <script>
     let currentResultText = '';
 
+    function toEasternArabicNumbers(str) {
+      const eastern = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+      return str.replace(/\d/g, d => eastern[d]);
+    }
+
     function calculateDateDifference() {
       const date1 = new Date(document.getElementById('date1').value);
       const date2 = new Date(document.getElementById('date2').value);
@@ -75,14 +85,14 @@
       const diffMonths = Math.floor(diffDays / 30.44);
       const diffYears = Math.floor(diffDays / 365.25);
 
-      currentResultText = 
+      currentResultText =
 `الفرق بين التاريخين هو:
 🗓️ ${diffDays} يوم
 📅 ${diffWeeks} أسبوع
 📆 ${diffMonths} شهر تقريبي
 🕰️ ${diffYears} سنة تقريبية`;
 
-      document.getElementById('result').innerText = currentResultText;
+      document.getElementById('result').innerText = toEasternArabicNumbers(currentResultText);
     }
 
     function saveResultToFile() {
@@ -91,7 +101,7 @@
         return;
       }
 
-      const blob = new Blob([currentResultText], { type: 'text/plain' });
+      const blob = new Blob([toEasternArabicNumbers(currentResultText)], { type: 'text/plain' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = 'الفرق-بين-تاريخين.txt';
