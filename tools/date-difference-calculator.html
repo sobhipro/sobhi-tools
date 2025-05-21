@@ -10,28 +10,28 @@
 <body class="bg-gray-100 min-h-screen text-gray-800 flex flex-col font-sans">
 
   <header class="bg-white shadow-md py-6 px-4 text-center">
-    <h1 class="text-3xl font-bold text-blue-700">Date Difference Tool</h1>
-    <p class="mt-2 text-lg text-gray-600">Enter two dates to calculate the difference.</p>
+    <h1 class="text-3xl font-bold text-blue-700">أداة حساب الفرق بين تاريخين</h1>
+    <p class="mt-2 text-lg text-gray-600">أدخل تاريخين لحساب الفرق بينهما.</p>
   </header>
 
   <main class="flex-grow py-10 px-4">
     <section class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-md border border-gray-200">
       <label class="block mb-4 text-left">
-        <span class="text-gray-700 font-medium">First Date:</span>
+        <span class="text-gray-700 font-medium">التاريخ الأول:</span>
         <input
           id="date1"
           type="text"
-          placeholder="Select date"
+          placeholder="اختر التاريخ"
           class="w-full mt-1 p-2 rounded-lg border border-gray-300 text-left"
         />
       </label>
 
       <label class="block mb-6 text-left">
-        <span class="text-gray-700 font-medium">Second Date:</span>
+        <span class="text-gray-700 font-medium">التاريخ الثاني:</span>
         <input
           id="date2"
           type="text"
-          placeholder="Select date"
+          placeholder="اختر التاريخ"
           class="w-full mt-1 p-2 rounded-lg border border-gray-300 text-left"
         />
       </label>
@@ -40,14 +40,14 @@
         onclick="calculateDateDifference()"
         class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 mb-4"
       >
-        Calculate Difference
+        حساب الفرق
       </button>
 
       <button
         onclick="saveResultToFile()"
         class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200 mb-4"
       >
-        Save Result as Text File
+        حفظ النتيجة كملف نصي
       </button>
 
       <div id="result" class="text-lg text-gray-800 font-medium text-right whitespace-pre-line"></div>
@@ -55,14 +55,14 @@
   </main>
 
   <footer class="bg-white text-center py-4 border-t">
-    <p class="text-sm text-gray-500">© 2025 Sobhi Chebaiki. All rights reserved.</p>
+    <p class="text-sm text-gray-500">© 2025 Sobhi Chebaiki. جميع الحقوق محفوظة.</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
-    // تهيئة flatpickr مع تنسيق التاريخ بالإنجليزية
+    // تهيئة flatpickr مع تنسيق التاريخ بالإنجليزية (أرقام وكلمات)
     flatpickr("#date1", {
-      dateFormat: "d F Y", // مثال: 29 April 2025
+      dateFormat: "d F Y", // مثل 29 April 2025
       locale: "default" // الإنجليزية
     });
 
@@ -78,7 +78,7 @@
       const d2 = document.getElementById('date2').value;
 
       if (!d1 || !d2) {
-        alert('Please select both dates.');
+        alert('يرجى اختيار التاريخين أولاً.');
         return;
       }
 
@@ -86,7 +86,7 @@
       const date2 = new Date(d2);
 
       if (isNaN(date1) || isNaN(date2)) {
-        alert('Invalid date(s).');
+        alert('أحد التاريخين غير صالح.');
         return;
       }
 
@@ -97,18 +97,18 @@
       const diffYears = Math.floor(diffDays / 365.25);
 
       currentResultText =
-`Difference between the two dates:
-🗓️ ${diffDays} days
-📅 ${diffWeeks} weeks
-📆 approx. ${diffMonths} months
-🕰️ approx. ${diffYears} years`;
+`الفرق بين التاريخين هو:
+${diffDays} يومًا
+${diffWeeks} أسبوعًا
+حوالي ${diffMonths} شهرًا
+حوالي ${diffYears} سنة`;
 
       document.getElementById('result').innerText = currentResultText;
     }
 
     function saveResultToFile() {
       if (!currentResultText) {
-        alert('Calculate the difference first.');
+        alert('يرجى حساب الفرق أولاً.');
         return;
       }
       const blob = new Blob([currentResultText], { type: 'text/plain' });
