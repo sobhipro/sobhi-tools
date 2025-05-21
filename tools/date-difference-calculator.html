@@ -30,12 +30,12 @@
     <section class="max-w-xl mx-auto bg-white p-6 rounded-2xl shadow-md border border-gray-200">
       <label class="block mb-4">
         <span class="text-gray-700 font-medium">التاريخ الأول:</span>
-        <input type="date" id="date1" lang="ar" class="w-full mt-1 p-2 rounded-lg border border-gray-300" />
+        <input type="date" id="date1" lang="en" class="w-full mt-1 p-2 rounded-lg border border-gray-300" />
       </label>
 
       <label class="block mb-6">
         <span class="text-gray-700 font-medium">التاريخ الثاني:</span>
-        <input type="date" id="date2" lang="ar" class="w-full mt-1 p-2 rounded-lg border border-gray-300" />
+        <input type="date" id="date2" lang="en" class="w-full mt-1 p-2 rounded-lg border border-gray-300" />
       </label>
 
       <button
@@ -58,17 +58,12 @@
 
   <!-- Footer -->
   <footer class="bg-white text-center py-4 border-t">
-    <p class="text-sm text-gray-500">حقوق النشر &copy; 2025 صبحي شبايكي</p>
+    <p class="text-sm text-gray-500">© 2025 Sobhi Chebaiki. All rights reserved.</p>
   </footer>
 
   <!-- Script -->
   <script>
     let currentResultText = '';
-
-    function toEasternArabicNumbers(str) {
-      const eastern = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-      return str.replace(/\d/g, d => eastern[d]);
-    }
 
     function calculateDateDifference() {
       const date1 = new Date(document.getElementById('date1').value);
@@ -92,7 +87,8 @@
 📆 ${diffMonths} شهر تقريبي
 🕰️ ${diffYears} سنة تقريبية`;
 
-      document.getElementById('result').innerText = toEasternArabicNumbers(currentResultText);
+      // عرض النتيجة مع أرقام إنجليزية وكلمات عربية
+      document.getElementById('result').innerText = currentResultText;
     }
 
     function saveResultToFile() {
@@ -101,10 +97,10 @@
         return;
       }
 
-      const blob = new Blob([toEasternArabicNumbers(currentResultText)], { type: 'text/plain' });
+      const blob = new Blob([currentResultText], { type: 'text/plain' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = 'الفرق-بين-تاريخين.txt';
+      link.download = 'date-difference.txt';
       link.click();
     }
   </script>
