@@ -42,20 +42,12 @@
         <p id="charCount">عدد الحروف: 0</p>
       </div>
 
-      <div class="flex gap-4">
-        <button
-          onclick="saveResults()"
-          class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition duration-200"
-        >
-          حفظ النتائج كملف نصي
-        </button>
-        <button
-          onclick="copyResults()"
-          class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
-        >
-          نسخ النتائج للحافظة
-        </button>
-      </div>
+      <button
+        onclick="saveResults()"
+        class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition duration-200"
+      >
+        حفظ النتائج كملف نصي
+      </button>
     </section>
   </main>
 
@@ -105,19 +97,6 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    }
-
-    function copyResults() {
-      if (lastWordCount === 0 && lastSentenceCount === 0 && lastCharCount === 0) {
-        alert('لا توجد نتائج للنسخ. يرجى حساب النص أولاً.');
-        return;
-      }
-      const content = `عدد الكلمات: ${lastWordCount}\nعدد الجمل: ${lastSentenceCount}\nعدد الحروف: ${lastCharCount}`;
-      navigator.clipboard.writeText(content).then(() => {
-        alert('تم نسخ النتائج إلى الحافظة.');
-      }).catch(() => {
-        alert('فشل النسخ إلى الحافظة.');
-      });
     }
   </script>
 
