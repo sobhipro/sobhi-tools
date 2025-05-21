@@ -65,34 +65,6 @@
         </div>
       </div>
 
-      <!-- Advanced Options -->
-      <div class="border-t pt-4">
-        <button id="advancedToggle" class="text-indigo-600 font-medium flex items-center">
-          <i class="fas fa-cog mr-2"></i>خيارات متقدمة
-          <i id="advancedIcon" class="fas fa-chevron-down ml-2 text-sm"></i>
-        </button>
-        <div id="advancedOptions" class="mt-3 space-y-4 hidden">
-          <div class="flex items-center">
-            <input type="checkbox" id="resizeCheck" class="mr-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500">
-            <label for="resizeCheck" class="text-gray-700">تغيير حجم الصور</label>
-          </div>
-          <div id="resizeOptions" class="grid grid-cols-2 gap-4 hidden">
-            <div>
-              <label for="widthInput" class="block text-sm text-gray-600">العرض (بكسل)</label>
-              <input type="number" id="widthInput" class="w-full p-2 border rounded">
-            </div>
-            <div>
-              <label for="heightInput" class="block text-sm text-gray-600">الارتفاع (بكسل)</label>
-              <input type="number" id="heightInput" class="w-full p-2 border rounded">
-            </div>
-          </div>
-          <div class="flex items-center">
-            <input type="checkbox" id="preserveNames" class="mr-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500" checked>
-            <label for="preserveNames" class="text-gray-700">الحفاظ على أسماء الملفات الأصلية</label>
-          </div>
-        </div>
-      </div>
-
       <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row gap-3 pt-2">
         <button id="convertBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-lg font-bold transition flex items-center justify-center">
@@ -123,12 +95,6 @@
     </div>
   </div>
 
-  <!-- Footer -->
-  <div class="mt-8 text-center text-gray-500 text-sm">
-    <p>أداة تحويل الصور المتقدمة &copy; 2023 | يدعم جميع المتصفحات الحديثة</p>
-    <p class="mt-1">الحد الأقصى لعدد الملفات: 50 صورة | الحد الأقصى للحجم: 20MB لكل صورة</p>
-  </div>
-
   <script>
     // عناصر DOM
     const elements = {
@@ -140,11 +106,6 @@
       qualityContainer: document.getElementById('qualityContainer'),
       qualitySlider: document.getElementById('qualitySlider'),
       qualityValue: document.getElementById('qualityValue'),
-      advancedToggle: document.getElementById('advancedToggle'),
-      advancedOptions: document.getElementById('advancedOptions'),
-      advancedIcon: document.getElementById('advancedIcon'),
-      resizeCheck: document.getElementById('resizeCheck'),
-      resizeOptions: document.getElementById('resizeOptions'),
       status: document.getElementById('status'),
       statusIcon: document.getElementById('statusIcon'),
       statusText: document.getElementById('statusText'),
@@ -202,19 +163,6 @@
       // شريط الجودة
       elements.qualitySlider.addEventListener('input', () => {
         elements.qualityValue.textContent = elements.qualitySlider.value;
-      });
-
-      // الخيارات المتقدمة
-      elements.advancedToggle.addEventListener('click', () => {
-        elements.advancedOptions.classList.toggle('hidden');
-        const icon = elements.advancedIcon;
-        icon.classList.toggle('fa-chevron-down');
-        icon.classList.toggle('fa-chevron-up');
-      });
-
-      // تغيير حجم الصور
-      elements.resizeCheck.addEventListener('change', () => {
-        elements.resizeOptions.classList.toggle('hidden');
       });
 
       // تحويل الصور
@@ -290,10 +238,6 @@
       const zip = new JSZip();
       const format = elements.formatSelect.value;
       const quality = parseInt(elements.qualitySlider.value) / 100;
-      const shouldResize = elements.resizeCheck.checked;
-      const width = parseInt(elements.widthInput.value) || null;
-      const height = parseInt(elements.heightInput.value) || null;
-      const preserveNames = elements.preserveNames.checked;
       
       // إعداد شريط التقدم
       elements.status.classList.remove('hidden');
@@ -301,22 +245,21 @@
       elements.statusText.textContent = 'جارٍ تحويل الصور...';
       elements.progressBar.classList.remove('hidden');
       elements.progressFill.style.width = '0%';
+      elements.progressText.textContent = `0 من ${files.length} مكتمل`;
       
       try {
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
           
           // تحديث حالة التقدم
-          const progress = Math.floor((i / files.length) * 100);
+          const progress = Math.floor(((i + 1) / files.length) * 100);
           elements.progressFill.style.width = `${progress}%`;
-          elements.progressText.textContent = `${i} من ${files.length} مكتمل`;
+          elements.progressText.textContent = `${i + 1} من ${files.length} مكتمل`;
           
           try {
-            const convertedBlob = await convertImage(file, format, quality, shouldResize, width, height);
+            const convertedBlob = await convertImage(file, format, quality);
             const extension = format === 'jpeg' ? 'jpg' : format;
-            const filename = preserveNames ? 
-              `${file.name.split('.')[0]}.${extension}` : 
-              `صورة_${i+1}.${extension}`;
+            const filename = `${file.name.split('.')[0]}.${extension}`;
             
             zip.file(filename, convertedBlob);
           } catch (error) {
@@ -326,11 +269,7 @@
         
         // إنشاء ملف ZIP
         elements.statusText.textContent = 'جارٍ إنشاء الأرشيف...';
-        const content = await zip.generateAsync({ type: "blob" }, metadata => {
-          const progress = Math.floor(metadata.percent);
-          elements.progressFill.style.width = `${progress}%`;
-          elements.progressText.textContent = `${Math.floor(metadata.currentFile)} من ${files.length} مكتمل`;
-        });
+        const content = await zip.generateAsync({ type: "blob" });
         
         // تحميل الملف
         saveAs(content, "صور_محولة.zip");
@@ -353,48 +292,33 @@
     }
 
     // تحويل صورة واحدة
-    function convertImage(file, format, quality, shouldResize, targetWidth, targetHeight) {
+    function convertImage(file, format, quality) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = async (e) => {
           try {
             const img = await loadImage(e.target.result);
             const canvas = document.createElement('canvas');
-            
-            // تغيير الحجم إذا مطلوب
-            if (shouldResize && (targetWidth || targetHeight)) {
-              const { width, height } = calculateAspectRatio(
-                img.width, 
-                img.height, 
-                targetWidth, 
-                targetHeight
-              );
-              
-              canvas.width = width;
-              canvas.height = height;
-            } else {
-              canvas.width = img.width;
-              canvas.height = img.height;
-            }
+            canvas.width = img.width;
+            canvas.height = img.height;
             
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             
             // تحويل إلى الصيغة المطلوبة
             let mimeType = `image/${format}`;
-            let blob;
             
             if (format === 'jpeg' || format === 'webp') {
-              blob = await new Promise(res => 
-                canvas.toBlob(res, mimeType, quality)
-              );
+              canvas.toBlob(blob => {
+                if (blob) resolve(blob);
+                else reject(new Error('فشل تحويل الصورة'));
+              }, mimeType, quality);
             } else {
-              blob = await new Promise(res => 
-                canvas.toBlob(res, mimeType)
-              );
+              canvas.toBlob(blob => {
+                if (blob) resolve(blob);
+                else reject(new Error('فشل تحويل الصورة'));
+              }, mimeType);
             }
-            
-            resolve(blob);
           } catch (error) {
             reject(error);
           }
@@ -402,29 +326,6 @@
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
-    }
-
-    // حساب نسبة الجوانب
-    function calculateAspectRatio(srcWidth, srcHeight, maxWidth, maxHeight) {
-      if (!maxWidth && !maxHeight) return { width: srcWidth, height: srcHeight };
-      
-      const ratio = srcWidth / srcHeight;
-      let width = maxWidth || (maxHeight * ratio);
-      let height = maxHeight || (maxWidth / ratio);
-      
-      if (maxWidth && maxHeight) {
-        // تأكد من أن الصورة لا تتجاوز أي من الأبعاد
-        if (width > maxWidth) {
-          width = maxWidth;
-          height = width / ratio;
-        }
-        if (height > maxHeight) {
-          height = maxHeight;
-          width = height * ratio;
-        }
-      }
-      
-      return { width: Math.round(width), height: Math.round(height) };
     }
 
     // تحميل الصورة
