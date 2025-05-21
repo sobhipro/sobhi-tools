@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>أداة محول وحدات الطول</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background-color: #f9fafb;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white shadow py-6 px-4 text-center">
+    <h1 class="text-3xl font-bold text-blue-700">أداة محول وحدات الطول</h1>
+    <p class="mt-2 text-gray-700">حوّل طولك بين وحدات مختلفة بسهولة وسرعة</p>
+  </header>
+
+  <!-- Main -->
+  <main class="flex-grow p-6 max-w-md mx-auto bg-white rounded-xl shadow-md border border-gray-300 mt-6">
+
+    <label for="inputValue" class="block mb-2 font-semibold">القيمة:</label>
+    <input type="number" id="inputValue" placeholder="أدخل قيمة الطول"
+      class="w-full border rounded-lg p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+    <div class="flex gap-4 mb-4">
+      <div class="flex flex-col w-1/2">
+        <label for="fromUnit" class="mb-2 font-semibold">من الوحدة:</label>
+        <select id="fromUnit" class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <option value="m">متر (m)</option>
+          <option value="cm">سنتيمتر (cm)</option>
+          <option value="km">كيلومتر (km)</option>
+          <option value="in">إنش (in)</option>
+          <option value="ft">قدم (ft)</option>
+          <option value="yd">ياردة (yd)</option>
+          <option value="mi">ميل (mi)</option>
+        </select>
+      </div>
+      <div class="flex flex-col w-1/2">
+        <label for="toUnit" class="mb-2 font-semibold">إلى الوحدة:</label>
+        <select id="toUnit" class="border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+          <option value="m">متر (m)</option>
+          <option value="cm">سنتيمتر (cm)</option>
+          <option value="km">كيلومتر (km)</option>
+          <option value="in">إنش (in)</option>
+          <option value="ft">قدم (ft)</option>
+          <option value="yd">ياردة (yd)</option>
+          <option value="mi">ميل (mi)</option>
+        </select>
+      </div>
+    </div>
+
+    <button onclick="convertLength()"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200">
+      تحويل
+    </button>
+
+    <section class="mt-6 text-center">
+      <h2 class="text-xl font-semibold mb-2">النتيجة:</h2>
+      <p id="result" class="text-lg text-gray-700 min-h-[40px]"></p>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center text-gray-500 py-4 border-t mt-6">
+    &copy; 2025 صبحي شبايكي
+  </footer>
+
+  <script>
+    // قيم التحويل إلى متر لكل وحدة
+    const unitToMeter = {
+      m: 1,
+      cm: 0.01,
+      km: 1000,
+      in: 0.0254,
+      ft: 0.3048,
+      yd: 0.9144,
+      mi: 1609.344
+    };
+
+    function convertLength() {
+      const value = parseFloat(document.getElementById("inputValue").value);
+      const fromUnit = document.getElementById("fromUnit").value;
+      const toUnit = document.getElementById("toUnit").value;
+      const resultP = document.getElementById("result");
+
+      if (isNaN(value)) {
+        resultP.textContent = "الرجاء إدخال قيمة عددية صحيحة.";
+        resultP.classList.add("text-red-600");
+        return;
+      }
+
+      // تحويل القيمة إلى متر أولاً
+      const valueInMeters = value * unitToMeter[fromUnit];
+      // ثم تحويلها للوحدة المطلوبة
+      const convertedValue = valueInMeters / unitToMeter[toUnit];
+
+      // حذف الأصفار العشرية غير الضرورية
+      const formattedValue = Number(convertedValue.toFixed(4)).toString();
+
+      resultP.textContent = `${value} ${getUnitName(fromUnit)} = ${formattedValue} ${getUnitName(toUnit)}`;
+      resultP.classList.remove("text-red-600");
+    }
+
+    function getUnitName(unit) {
+      switch (unit) {
+        case "m": return "متر";
+        case "cm": return "سنتيمتر";
+        case "km": return "كيلومتر";
+        case "in": return "إنش";
+        case "ft": return "قدم";
+        case "yd": return "ياردة";
+        case "mi": return "ميل";
+        default: return unit;
+      }
+    }
+  </script>
+
+</body>
+</html>
