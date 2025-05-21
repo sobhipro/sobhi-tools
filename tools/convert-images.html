@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>أداة تحويل صيغ الصور المتقدمة</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex flex-col items-center py-10 px-4">
+
+  <div class="w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden">
+    <!-- Header -->
+    <div class="bg-indigo-600 text-white p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold"><i class="fas fa-image mr-2"></i> أداة تحويل صيغ الصور المتقدمة</h1>
+          <p class="text-indigo-100 mt-1">تحويل دفعة من الصور إلى صيغة واحدة بجودة عالية</p>
+        </div>
+        <div class="bg-white text-indigo-600 p-3 rounded-lg hidden md:block">
+          <i class="fas fa-exchange-alt text-2xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="p-6 space-y-6">
+      <!-- Upload Section -->
+      <div>
+        <div id="dropArea" class="border-2 border-dashed border-indigo-400 rounded-lg p-8 text-center cursor-pointer transition-all duration-300 hover:border-indigo-600 hover:bg-indigo-50">
+          <i class="fas fa-cloud-upload-alt text-4xl text-indigo-500 mb-3"></i>
+          <p class="text-lg font-medium text-gray-700">اسحب وأسقط الصور هنا</p>
+          <p class="text-gray-500 mt-1">أو انقر لاختيار الملفات</p>
+          <input type="file" id="imageInput" multiple accept="image/*" class="hidden">
+        </div>
+        <div id="fileInfo" class="mt-3 text-sm text-gray-600 hidden">
+          <i class="fas fa-info-circle mr-1"></i>
+          <span id="fileCount">0</span> ملفات مختارة - <span id="fileSize">0</span> MB
+        </div>
+      </div>
+
+      <!-- Settings Section -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Format Selection -->
+        <div>
+          <label for="formatSelect" class="block font-medium text-gray-700 mb-2">
+            <i class="fas fa-file-image mr-2"></i>صيغة الإخراج
+          </label>
+          <select id="formatSelect" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            <option value="png">PNG (بدون خسارة)</option>
+            <option value="jpeg">JPEG (بضغط قابل للتعديل)</option>
+            <option value="webp">WebP (حديث بجودة عالية)</option>
+            <option value="bmp">BMP (بدون ضغط)</option>
+          </select>
+        </div>
+
+        <!-- Quality Slider (for JPEG/WebP) -->
+        <div id="qualityContainer" class="hidden">
+          <label for="qualitySlider" class="block font-medium text-gray-700 mb-2">
+            <i class="fas fa-sliders-h mr-2"></i>جودة الصورة: <span id="qualityValue">80</span>%
+          </label>
+          <input type="range" id="qualitySlider" min="1" max="100" value="80" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+        </div>
+      </div>
+
+      <!-- Advanced Options -->
+      <div class="border-t pt-4">
+        <button id="advancedToggle" class="text-indigo-600 font-medium flex items-center">
+          <i class="fas fa-cog mr-2"></i>خيارات متقدمة
+          <i id="advancedIcon" class="fas fa-chevron-down ml-2 text-sm"></i>
+        </button>
+        <div id="advancedOptions" class="mt-3 space-y-4 hidden">
+          <div class="flex items-center">
+            <input type="checkbox" id="resizeCheck" class="mr-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+            <label for="resizeCheck" class="text-gray-700">تغيير حجم الصور</label>
+          </div>
+          <div id="resizeOptions" class="grid grid-cols-2 gap-4 hidden">
+            <div>
+              <label for="widthInput" class="block text-sm text-gray-600">العرض (بكسل)</label>
+              <input type="number" id="widthInput" class="w-full p-2 border rounded">
+            </div>
+            <div>
+              <label for="heightInput" class="block text-sm text-gray-600">الارتفاع (بكسل)</label>
+              <input type="number" id="heightInput" class="w-full p-2 border rounded">
+            </div>
+          </div>
+          <div class="flex items-center">
+            <input type="checkbox" id="preserveNames" class="mr-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500" checked>
+            <label for="preserveNames" class="text-gray-700">الحفاظ على أسماء الملفات الأصلية</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <button id="convertBtn" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-lg font-bold transition flex items-center justify-center">
+          <i class="fas fa-exchange-alt mr-2"></i>تحويل الصور
+        </button>
+        <button id="clearBtn" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 py-3 px-6 rounded-lg font-bold transition flex items-center justify-center">
+          <i class="fas fa-trash-alt mr-2"></i>مسح الكل
+        </button>
+      </div>
+    </div>
+
+    <!-- Status Section -->
+    <div id="status" class="bg-gray-50 border-t p-4 hidden">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <div id="statusIcon" class="text-blue-500 mr-3">
+            <i class="fas fa-spinner fa-spin text-xl"></i>
+          </div>
+          <div>
+            <p id="statusText" class="font-medium">جارٍ تحويل الصور...</p>
+            <p id="progressText" class="text-sm text-gray-600">0 من 0 مكتمل</p>
+          </div>
+        </div>
+        <div id="progressBar" class="hidden md:block w-1/3 bg-gray-200 rounded-full h-2.5">
+          <div id="progressFill" class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="mt-8 text-center text-gray-500 text-sm">
+    <p>أداة تحويل الصور المتقدمة &copy; 2023 | يدعم جميع المتصفحات الحديثة</p>
+    <p class="mt-1">الحد الأقصى لعدد الملفات: 50 صورة | الحد الأقصى للحجم: 20MB لكل صورة</p>
+  </div>
+
+  <script>
+    // عناصر DOM
+    const elements = {
+      dropArea: document.getElementById('dropArea'),
+      imageInput: document.getElementById('imageInput'),
+      convertBtn: document.getElementById('convertBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      formatSelect: document.getElementById('formatSelect'),
+      qualityContainer: document.getElementById('qualityContainer'),
+      qualitySlider: document.getElementById('qualitySlider'),
+      qualityValue: document.getElementById('qualityValue'),
+      advancedToggle: document.getElementById('advancedToggle'),
+      advancedOptions: document.getElementById('advancedOptions'),
+      advancedIcon: document.getElementById('advancedIcon'),
+      resizeCheck: document.getElementById('resizeCheck'),
+      resizeOptions: document.getElementById('resizeOptions'),
+      status: document.getElementById('status'),
+      statusIcon: document.getElementById('statusIcon'),
+      statusText: document.getElementById('statusText'),
+      progressText: document.getElementById('progressText'),
+      progressBar: document.getElementById('progressBar'),
+      progressFill: document.getElementById('progressFill'),
+      fileInfo: document.getElementById('fileInfo'),
+      fileCount: document.getElementById('fileCount'),
+      fileSize: document.getElementById('fileSize')
+    };
+
+    let files = [];
+    let isConverting = false;
+
+    // أحداث الصفحة
+    function initEvents() {
+      // فتح نافذة اختيار الملفات عند النقر على منطقة السحب
+      elements.dropArea.addEventListener('click', () => elements.imageInput.click());
+
+      // عند اختيار الملفات
+      elements.imageInput.addEventListener('change', (e) => {
+        handleFiles([...e.target.files]);
+      });
+
+      // دعم السحب والإفلات
+      ['dragenter', 'dragover'].forEach(eventName =>
+        elements.dropArea.addEventListener(eventName, e => {
+          e.preventDefault();
+          elements.dropArea.classList.add('border-indigo-600', 'bg-indigo-50');
+        })
+      );
+
+      ['dragleave', 'drop'].forEach(eventName =>
+        elements.dropArea.addEventListener(eventName, e => {
+          e.preventDefault();
+          elements.dropArea.classList.remove('border-indigo-600', 'bg-indigo-50');
+        })
+      );
+
+      elements.dropArea.addEventListener('drop', (e) => {
+        const droppedFiles = [...e.dataTransfer.files].filter(file => file.type.startsWith("image/"));
+        handleFiles(droppedFiles);
+      });
+
+      // تغيير نوع الصيغة
+      elements.formatSelect.addEventListener('change', () => {
+        const format = elements.formatSelect.value;
+        if (format === 'jpeg' || format === 'webp') {
+          elements.qualityContainer.classList.remove('hidden');
+        } else {
+          elements.qualityContainer.classList.add('hidden');
+        }
+      });
+
+      // شريط الجودة
+      elements.qualitySlider.addEventListener('input', () => {
+        elements.qualityValue.textContent = elements.qualitySlider.value;
+      });
+
+      // الخيارات المتقدمة
+      elements.advancedToggle.addEventListener('click', () => {
+        elements.advancedOptions.classList.toggle('hidden');
+        const icon = elements.advancedIcon;
+        icon.classList.toggle('fa-chevron-down');
+        icon.classList.toggle('fa-chevron-up');
+      });
+
+      // تغيير حجم الصور
+      elements.resizeCheck.addEventListener('change', () => {
+        elements.resizeOptions.classList.toggle('hidden');
+      });
+
+      // تحويل الصور
+      elements.convertBtn.addEventListener('click', async () => {
+        if (isConverting) return;
+        if (files.length === 0) return showAlert('يرجى اختيار الصور أولاً', 'error');
+        
+        await convertImages();
+      });
+
+      // مسح الكل
+      elements.clearBtn.addEventListener('click', () => {
+        if (isConverting) return;
+        files = [];
+        elements.imageInput.value = '';
+        updateFileInfo();
+        elements.dropArea.innerHTML = `
+          <i class="fas fa-cloud-upload-alt text-4xl text-indigo-500 mb-3"></i>
+          <p class="text-lg font-medium text-gray-700">اسحب وأسقط الصور هنا</p>
+          <p class="text-gray-500 mt-1">أو انقر لاختيار الملفات</p>
+        `;
+      });
+    }
+
+    // معالجة الملفات المختارة
+    function handleFiles(newFiles) {
+      if (newFiles.length === 0) return;
+      
+      // التحقق من عدد الملفات
+      if (files.length + newFiles.length > 50) {
+        return showAlert('لا يمكن تحويل أكثر من 50 صورة في المرة الواحدة', 'error');
+      }
+      
+      // التحقق من حجم الملفات
+      const largeFiles = newFiles.filter(file => file.size > 20 * 1024 * 1024);
+      if (largeFiles.length > 0) {
+        return showAlert(`بعض الملفات تتجاوز 20MB: ${largeFiles.map(f => f.name).join(', ')}`, 'error');
+      }
+      
+      files = [...files, ...newFiles];
+      updateFileInfo();
+      
+      // تحديث واجهة المستخدم
+      elements.dropArea.innerHTML = `
+        <div class="flex items-center justify-center">
+          <i class="fas fa-check-circle text-3xl text-green-500 mr-3"></i>
+          <div>
+            <p class="font-medium text-gray-800">تم اختيار ${files.length} صورة</p>
+            <p class="text-sm text-gray-500">انقر لإضافة المزيد</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // تحديث معلومات الملفات
+    function updateFileInfo() {
+      if (files.length === 0) {
+        elements.fileInfo.classList.add('hidden');
+        return;
+      }
+      
+      const totalSize = files.reduce((sum, file) => sum + file.size, 0);
+      const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
+      
+      elements.fileCount.textContent = files.length;
+      elements.fileSize.textContent = sizeInMB;
+      elements.fileInfo.classList.remove('hidden');
+    }
+
+    // تحويل الصور
+    async function convertImages() {
+      isConverting = true;
+      const zip = new JSZip();
+      const format = elements.formatSelect.value;
+      const quality = parseInt(elements.qualitySlider.value) / 100;
+      const shouldResize = elements.resizeCheck.checked;
+      const width = parseInt(elements.widthInput.value) || null;
+      const height = parseInt(elements.heightInput.value) || null;
+      const preserveNames = elements.preserveNames.checked;
+      
+      // إعداد شريط التقدم
+      elements.status.classList.remove('hidden');
+      elements.statusIcon.innerHTML = '<i class="fas fa-spinner fa-spin text-xl"></i>';
+      elements.statusText.textContent = 'جارٍ تحويل الصور...';
+      elements.progressBar.classList.remove('hidden');
+      elements.progressFill.style.width = '0%';
+      
+      try {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          
+          // تحديث حالة التقدم
+          const progress = Math.floor((i / files.length) * 100);
+          elements.progressFill.style.width = `${progress}%`;
+          elements.progressText.textContent = `${i} من ${files.length} مكتمل`;
+          
+          try {
+            const convertedBlob = await convertImage(file, format, quality, shouldResize, width, height);
+            const extension = format === 'jpeg' ? 'jpg' : format;
+            const filename = preserveNames ? 
+              `${file.name.split('.')[0]}.${extension}` : 
+              `صورة_${i+1}.${extension}`;
+            
+            zip.file(filename, convertedBlob);
+          } catch (error) {
+            console.error(`فشل تحويل ${file.name}:`, error);
+          }
+        }
+        
+        // إنشاء ملف ZIP
+        elements.statusText.textContent = 'جارٍ إنشاء الأرشيف...';
+        const content = await zip.generateAsync({ type: "blob" }, metadata => {
+          const progress = Math.floor(metadata.percent);
+          elements.progressFill.style.width = `${progress}%`;
+          elements.progressText.textContent = `${Math.floor(metadata.currentFile)} من ${files.length} مكتمل`;
+        });
+        
+        // تحميل الملف
+        saveAs(content, "صور_محولة.zip");
+        
+        // إكمال الحالة
+        elements.statusIcon.innerHTML = '<i class="fas fa-check-circle text-xl text-green-500"></i>';
+        elements.statusText.textContent = 'تم التحويل بنجاح!';
+        elements.progressFill.style.width = '100%';
+        elements.progressText.textContent = `${files.length} من ${files.length} مكتمل`;
+        
+        showAlert('تم تحويل وتحميل الصور بنجاح', 'success');
+      } catch (error) {
+        console.error('حدث خطأ أثناء التحويل:', error);
+        elements.statusIcon.innerHTML = '<i class="fas fa-times-circle text-xl text-red-500"></i>';
+        elements.statusText.textContent = 'حدث خطأ أثناء التحويل';
+        showAlert('حدث خطأ أثناء تحويل الصور', 'error');
+      } finally {
+        isConverting = false;
+      }
+    }
+
+    // تحويل صورة واحدة
+    function convertImage(file, format, quality, shouldResize, targetWidth, targetHeight) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            const img = await loadImage(e.target.result);
+            const canvas = document.createElement('canvas');
+            
+            // تغيير الحجم إذا مطلوب
+            if (shouldResize && (targetWidth || targetHeight)) {
+              const { width, height } = calculateAspectRatio(
+                img.width, 
+                img.height, 
+                targetWidth, 
+                targetHeight
+              );
+              
+              canvas.width = width;
+              canvas.height = height;
+            } else {
+              canvas.width = img.width;
+              canvas.height = img.height;
+            }
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+            // تحويل إلى الصيغة المطلوبة
+            let mimeType = `image/${format}`;
+            let blob;
+            
+            if (format === 'jpeg' || format === 'webp') {
+              blob = await new Promise(res => 
+                canvas.toBlob(res, mimeType, quality)
+              );
+            } else {
+              blob = await new Promise(res => 
+                canvas.toBlob(res, mimeType)
+              );
+            }
+            
+            resolve(blob);
+          } catch (error) {
+            reject(error);
+          }
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // حساب نسبة الجوانب
+    function calculateAspectRatio(srcWidth, srcHeight, maxWidth, maxHeight) {
+      if (!maxWidth && !maxHeight) return { width: srcWidth, height: srcHeight };
+      
+      const ratio = srcWidth / srcHeight;
+      let width = maxWidth || (maxHeight * ratio);
+      let height = maxHeight || (maxWidth / ratio);
+      
+      if (maxWidth && maxHeight) {
+        // تأكد من أن الصورة لا تتجاوز أي من الأبعاد
+        if (width > maxWidth) {
+          width = maxWidth;
+          height = width / ratio;
+        }
+        if (height > maxHeight) {
+          height = maxHeight;
+          width = height * ratio;
+        }
+      }
+      
+      return { width: Math.round(width), height: Math.round(height) };
+    }
+
+    // تحميل الصورة
+    function loadImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    }
+
+    // عرض رسالة تنبيه
+    function showAlert(message, type = 'info') {
+      const alert = document.createElement('div');
+      alert.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg text-white font-medium ${
+        type === 'error' ? 'bg-red-500' : 
+        type === 'success' ? 'bg-green-500' : 'bg-blue-500'
+      }`;
+      alert.innerHTML = `
+        <div class="flex items-center">
+          <i class="fas ${
+            type === 'error' ? 'fa-exclamation-circle' : 
+            type === 'success' ? 'fa-check-circle' : 'fa-info-circle'
+          } mr-2"></i>
+          <span>${message}</span>
+        </div>
+      `;
+      document.body.appendChild(alert);
+      
+      setTimeout(() => {
+        alert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+        setTimeout(() => alert.remove(), 500);
+      }, 3000);
+    }
+
+    // بدء التطبيق
+    initEvents();
+  </script>
+</body>
+</html>
