@@ -386,7 +386,43 @@
     // بدء التطبيق
     initEvents();
   </script>
-
+ <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const counterElement = document.getElementById('visitCount');
+      
+      // استخدم اسم نطاقك كمفتاح فريد للعداد
+      const namespace = 'sobhi-tools';
+      const key = 'visits';
+      
+      // محاولة الاتصال بـ CounterAPI
+      fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+        })
+        .then(data => {
+          // عرض عدد الزيارات بالأرقام الإنجليزية
+          counterElement.textContent = data.value.toLocaleString('en');
+          
+          // إضافة تأثير حركة
+          counterElement.classList.add('animate-pulse');
+          setTimeout(() => counterElement.classList.remove('animate-pulse'), 1000);
+        })
+        .catch(error => {
+          console.error('Error using CounterAPI:', error);
+          
+          // Fallback إلى localStorage في حالة فشل الاتصال
+          let visits = localStorage.getItem('siteVisits');
+          if (!visits) {
+            visits = 1;
+          } else {
+            visits = parseInt(visits) + 1;
+          }
+          localStorage.setItem('siteVisits', visits);
+          counterElement.textContent = visits.toLocaleString('en');
+        });
+    });
+  </script>
    
 </body>
 </html>
