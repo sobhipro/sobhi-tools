@@ -116,12 +116,12 @@
     }
   </script>
   
-  <script>
+ <script>
     document.addEventListener('DOMContentLoaded', function() {
       const counterElement = document.getElementById('visitCount');
       
-      // استخدم اسم نطاقك كمفتاح فريد للعداد
-      const namespace = 'sobhi-tools';
+      // استخدم اسم فريد لعداد هذه الأداة فقط
+      const namespace = 'sobhi-tools-text-converter'; // تغيير هذا لكل أداة
       const key = 'visits';
       
       // محاولة الاتصال بـ CounterAPI
@@ -142,25 +142,19 @@
           console.error('Error using CounterAPI:', error);
           
           // Fallback إلى localStorage في حالة فشل الاتصال
-          let visits = localStorage.getItem('siteVisits');
+          let visits = localStorage.getItem('convertImagesVisits');
           if (!visits) {
             visits = 1;
           } else {
             visits = parseInt(visits) + 1;
           }
-          localStorage.setItem('siteVisits', visits);
+          localStorage.setItem('convertImagesVisits', visits);
           counterElement.textContent = visits.toLocaleString('en');
         });
+
+      // كود أداة تحويل الصور هنا...
+      // يمكنك إضافة الكود الخاص بأداة تحويل الصور هنا
     });
   </script>
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "أدوات صبحي",
-  "description": "مجموعة أدوات مجانية للتحويل بين الصيغ والنصوص العربية",
-  "applicationCategory": "UtilitiesApplication"
-}
-</script>
 </body>
 </html>
