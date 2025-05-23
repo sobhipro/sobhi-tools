@@ -9,6 +9,19 @@
     body {
       font-family: 'Tajawal', sans-serif;
     }
+    .visit-counter {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .animate-pulse {
+      animation: pulse 1s ease-in-out;
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -18,6 +31,18 @@
   <header class="bg-white shadow py-6 px-4 text-center">
     <h1 class="text-3xl font-bold text-blue-700">أدوات صبحي</h1>
     <p class="mt-2 text-lg text-gray-600">مجموعة من الأدوات المفيدة والبسيطة. اختر الأداة التي تريد استخدامها</p>
+    
+    <!-- Visit Counter -->
+    <div class="visit-counter inline-block px-6 py-2 mt-4">
+      <div class="flex items-center justify-center space-x-2 space-x-reverse">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+        <span id="visitCount" class="text-xl font-bold">0</span>
+        <span>زيارة</span>
+      </div>
+    </div>
   </header>
 
   <!-- Main -->
@@ -31,85 +56,54 @@
         </a>
       </div>
 
-
       <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition duration-300 border border-gray-200">
         <a href="tools/remove-diacritics.html" class="block">
           <h2 class="text-xl font-semibold text-blue-600 mb-2">أداة إزالة تشكيل النص</h2>
-
-          
           <p class="text-gray-700">أداة تزيل التشكيل من النصوص العربية بسرعة وتسمح بحفظ النتيجة كملف نصي.</p>
-
-
         </a>
       </div>
+
       <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition duration-300 border border-gray-200">
         <a href="tools/text-converter.html" class="block">
           <h2 class="text-xl font-semibold text-blue-600 mb-2">أداة تحويل النصوص</h2>
           <p class="text-gray-700">أداة تحويل النصوص كبيرة صغيرة عكس</p>
-
-
         </a>
       </div>
 
-       <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition duration-300 border border-gray-200">
+      <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition duration-300 border border-gray-200">
         <a href="tools/count-words-sentences.html" class="block">
           <h2 class="text-xl font-semibold text-blue-600 mb-2">أداة عدّ الكلمات والجمل والحروف</h2>
           <p class="text-gray-700">أداة تحسب عدد الكلمات والجمل في النص العربي، مع خيار الحفظ أو النسخ.</p>
-
-
         </a>
       </div>
 
-
-
-             <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition duration-300 border border-gray-200">
+      <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition duration-300 border border-gray-200">
         <a href="tools/date-difference-calculator.html" class="block">
           <h2 class="text-xl font-semibold text-blue-600 mb-2">أداة حساب الفرق بين تاريخين</h2>
           <p class="text-gray-700">أداة لحساب الفرق بين تاريخين بالأيام، الأسابيع، الأشهر أو السنوات بدقة وسرعة.</p>
-
-
         </a>
       </div>
-
 
       <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition duration-300 border border-gray-200">
         <a href="tools/arabic-numbers-converter.html" class="block">
           <h2 class="text-xl font-semibold text-blue-600 mb-2">أداة تحويل الأرقام</h2>
           <p class="text-gray-700">أداة لتحويل الأرقام بين الأنظمة المختلفة (العربية، الهندية، الرومانية) بسهولة وسرعة، مفيدة في الطباعة، التعليم، والبرمجة.</p>
-
-
         </a>
       </div>
 
-
-        <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition duration-300 border border-gray-200">
+      <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition duration-300 border border-gray-200">
         <a href="tools/password-generator.html" class="block">
           <h2 class="text-xl font-semibold text-blue-600 mb-2">أداة لتوليد كلمات مرور قوية</h2>
           <p class="text-gray-700">أداة لتوليد كلمات مرور قوية قابلة للتخصيص، مع تقييم مستوى الأمان، إمكانية النسخ والحفظ كملف نصي.</p>
-
-
         </a>
       </div>
-
-
 
       <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition duration-300 border border-gray-200">
         <a href="tools/length-converter.html" class="block">
           <h2 class="text-xl font-semibold text-blue-600 mb-2">أداة محول وحدات الطول</h2>
           <p class="text-gray-700">أداة لتحويل وحدات الطول بين متر، سنتيمتر، كيلومتر، إنش، قدم، ياردة، وميل بدقة وسرعة مع حذف الأصفار العشرية غير الضرورية.</p>
-
-
         </a>
       </div>
-
-
-      
-
-
-      
-
-
-      
     </section>
   </main>
 
@@ -118,5 +112,42 @@
     <p class="text-sm text-gray-500">حقوق النشر &copy; 2025 صبحي شبايكي</p>
   </footer>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const counterElement = document.getElementById('visitCount');
+      
+      // استخدم اسم نطاقك كمفتاح فريد للعداد
+      const namespace = 'sobhi-tools';
+      const key = 'visits';
+      
+      // محاولة الاتصال بـ CounterAPI
+      fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+        })
+        .then(data => {
+          // عرض عدد الزيارات بالأرقام الإنجليزية
+          counterElement.textContent = data.value.toLocaleString('en');
+          
+          // إضافة تأثير حركة
+          counterElement.classList.add('animate-pulse');
+          setTimeout(() => counterElement.classList.remove('animate-pulse'), 1000);
+        })
+        .catch(error => {
+          console.error('Error using CounterAPI:', error);
+          
+          // Fallback إلى localStorage في حالة فشل الاتصال
+          let visits = localStorage.getItem('siteVisits');
+          if (!visits) {
+            visits = 1;
+          } else {
+            visits = parseInt(visits) + 1;
+          }
+          localStorage.setItem('siteVisits', visits);
+          counterElement.textContent = visits.toLocaleString('en');
+        });
+    });
+  </script>
 </body>
 </html>
