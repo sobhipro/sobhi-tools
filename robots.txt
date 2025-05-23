@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sobhipro.github.io/sobhi-tools/sitemap.xml
