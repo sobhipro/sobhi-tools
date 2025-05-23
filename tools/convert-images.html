@@ -14,16 +14,16 @@
  
     
     <!-- Visit Counter -->
-    <div class="visit-counter inline-block px-6 py-2 mt-4">
-      <div class="flex items-center justify-center space-x-2 space-x-reverse">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-        </svg>
-        <span id="visitCount" class="text-xl font-bold">0</span>
-        <span>زيارة</span>
+  <div class="visit-counter inline-block px-4 py-1">
+        <div class="flex items-center justify-center space-x-2 space-x-reverse">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          <span id="visitCount" class="font-bold">0</span>
+          <span class="text-sm">زيارة</span>
+        </div>
       </div>
-    </div>
  
   <div class="w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden">
     <!-- Header -->
@@ -388,8 +388,8 @@
     document.addEventListener('DOMContentLoaded', function() {
       const counterElement = document.getElementById('visitCount');
       
-      // استخدم اسم نطاقك كمفتاح فريد للعداد
-      const namespace = 'convert-images';
+      // استخدم اسم فريد لعداد هذه الأداة فقط
+      const namespace = 'sobhi-tools-convert-images'; // تغيير هذا لكل أداة
       const key = 'visits';
       
       // محاولة الاتصال بـ CounterAPI
@@ -410,17 +410,19 @@
           console.error('Error using CounterAPI:', error);
           
           // Fallback إلى localStorage في حالة فشل الاتصال
-          let visits = localStorage.getItem('siteVisits');
+          let visits = localStorage.getItem('convertImagesVisits');
           if (!visits) {
             visits = 1;
           } else {
             visits = parseInt(visits) + 1;
           }
-          localStorage.setItem('siteVisits', visits);
+          localStorage.setItem('convertImagesVisits', visits);
           counterElement.textContent = visits.toLocaleString('en');
         });
+
+      // كود أداة تحويل الصور هنا...
+      // يمكنك إضافة الكود الخاص بأداة تحويل الصور هنا
     });
   </script>
-   
 </body>
 </html>
